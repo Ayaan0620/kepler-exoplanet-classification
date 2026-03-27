@@ -54,9 +54,7 @@ class LogisticRegressionScratch:
         return (self.predict_proba(X) >= threshold).astype(int)
 
 
-# -------------------------------------------------------------------
-# step 1 - load and feature engineering
-# -------------------------------------------------------------------
+# load and feature engineering
 print("loading data...")
 df = pd.read_csv('kepler_clean.csv')
 
@@ -79,9 +77,7 @@ for col in engineered_cols + rel_unc_cols:
 
 print(f"shape after feature eng: {df.shape}")
 
-# -------------------------------------------------------------------
-# step 2 - define 5 feature sets
-# -------------------------------------------------------------------
+# 5 feature sets
 all_cols = [c for c in df.columns if c != 'target']
 extra_cols = engineered_cols + rel_unc_cols
 uncertainty_cols = [c for c in all_cols if ('err1' in c or 'err2' in c) and c not in extra_cols]
@@ -99,9 +95,7 @@ print("\nfeature sets:")
 for name, cols in feature_sets.items():
     print(f"  {name}: {len(cols)} features")
 
-# -------------------------------------------------------------------
-# step 3 - stratified 10-fold CV
-# -------------------------------------------------------------------
+# 10-fold CV
 print("\nrunning CV for all 5 feature sets x 4 models = 20 experiments...")
 skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 
@@ -160,10 +154,8 @@ for fs_name, fs_cols in feature_sets.items():
             'auc_std':     np.std(fold_metrics[m_name]['auc'])
         })
 
-# -------------------------------------------------------------------
-# step 4 - results table
-# -------------------------------------------------------------------
-print("\n--- RESULTS ---")
+# results
+print("\nresults:")
 results_df = pd.DataFrame(results)
 header = f"{'Model':<15} | {'Feature Set':<22} | {'Accuracy':<18} | {'F1':<15} | {'AUC-ROC'}"
 print(header)
@@ -182,9 +174,7 @@ for _, row in results_df.iterrows():
 results_df.to_csv("experiment_results_v2.csv", index=False)
 print("\nsaved to experiment_results_v2.csv")
 
-# -------------------------------------------------------------------
-# step 5 - plots
-# -------------------------------------------------------------------
+# plots
 print("\ngenerating plots...")
 
 fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(14, 6))

@@ -45,7 +45,7 @@ class LogisticRegressionScratch:
 
 
 # --- task 1: test LR on make_moons ---
-print("--- TASK 1: TESTING LR ON MAKE_MOONS ---")
+print("testing LR on make_moons...")
 X_moon, y_moon = make_moons(n_samples=500, noise=0.2, random_state=42)
 X_m_train, X_m_test, y_m_train, y_m_test = train_test_split(X_moon, y_moon, test_size=0.2, random_state=42)
 
@@ -60,7 +60,7 @@ print(f"LR Scratch on make_moons: {moon_acc:.4f}\n")
 
 
 # --- task 2: 10-fold CV on kepler data ---
-print("--- TASK 2 & 3: STRATIFIED 10-FOLD CV ---")
+print("running 10-fold CV on kepler data...")
 df = pd.read_csv('kepler_clean.csv')
 
 # feature engineering
@@ -128,6 +128,6 @@ for fs_name, fs_cols in feature_sets.items():
 results_df = pd.DataFrame(results_summary)
 results_df.to_csv('experiment_results.csv', index=False)
 
-print("\n--- RESULTS ---")
+print("\nresults:")
 print(results_df.to_string(index=False))
 print("\nsaved to experiment_results.csv")

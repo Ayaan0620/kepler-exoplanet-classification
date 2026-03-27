@@ -14,9 +14,7 @@ from xgboost import XGBClassifier
 
 warnings.filterwarnings('ignore')
 
-# -------------------------------------------------------------------
-# logistic regression from scratch (numpy only)
-# -------------------------------------------------------------------
+# logistic regression from scratch
 class LogisticRegressionScratch:
 
     def __init__(self, learning_rate=0.01, n_iterations=1000):
@@ -56,9 +54,7 @@ class LogisticRegressionScratch:
         return (self.predict_proba(X) >= threshold).astype(int)
 
 
-# -------------------------------------------------------------------
-# step 1 - load data and build features
-# -------------------------------------------------------------------
+# load data and build features
 print("loading data...")
 df = pd.read_csv('kepler_clean.csv')
 
@@ -73,9 +69,7 @@ for col in engineered_cols:
 
 print(f"loaded. shape: {df.shape}")
 
-# -------------------------------------------------------------------
-# step 2 - define 3 feature sets for ablation
-# -------------------------------------------------------------------
+# define feature sets for ablation
 all_cols = [c for c in df.columns if c != 'target']
 uncertainty_cols = [c for c in all_cols if 'err1' in c or 'err2' in c]
 base_cols = [c for c in all_cols if c not in uncertainty_cols and c not in engineered_cols]
@@ -90,9 +84,7 @@ print("\nFeature sets:")
 for name, cols in feature_sets.items():
     print(f"  {name}: {len(cols)} features")
 
-# -------------------------------------------------------------------
-# step 3 - 10-fold stratified cross validation
-# -------------------------------------------------------------------
+# 10-fold CV
 print("\nrunning CV... (this takes a few mins)")
 skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 
@@ -149,10 +141,8 @@ for fs_name, fs_cols in feature_sets.items():
             'AUC-ROC': (np.mean(fold_metrics[m_name]['auc']), np.std(fold_metrics[m_name]['auc']))
         })
 
-# -------------------------------------------------------------------
-# step 4 - print results
-# -------------------------------------------------------------------
-print("\n--- RESULTS ---")
+# results
+print("\nresults:")
 header = f"{'Model':<15} | {'Feature Set':<22} | {'Accuracy':<18} | {'F1':<15} | {'AUC-ROC'}"
 print(header)
 print("-" * 90)
@@ -170,9 +160,7 @@ for res in results:
           f"{auc_m:.3f} ± {auc_s:.3f}")
     prev_fs = res['Feature Set']
 
-# -------------------------------------------------------------------
-# step 5 - plots
-# -------------------------------------------------------------------
+# plots
 print("\ngenerating plots...")
 
 # plot 1 - ROC curves
@@ -271,9 +259,7 @@ plt.tight_layout()
 plt.savefig("ablation_barplot.png", dpi=150)
 plt.close()
 
-# -------------------------------------------------------------------
-# step 6 - SHAP (optional, needs shap installed)
-# -------------------------------------------------------------------
+# SHAP analysis
 print("\nrunning SHAP...")
 try:
     import shap
@@ -293,9 +279,4 @@ except ImportError:
 except Exception as e:
     print(f"SHAP failed: {e}")
 
-print("\ndone! files saved:")
-print("  roc_curves.png")
-print("  lr_training_loss.png")
-print("  eda_plots.png")
-print("  ablation_barplot.png")
-print("  shap_beeswarm.png (if shap installed)")
+print("\ndone")
